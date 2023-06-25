@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\MyTransactionController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductGalleryController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -15,21 +22,41 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+Route::get('/',[FrontendController::class,'index'])->name('index');
+Route::get('/details/{slug}',[FrontendController::class, 'details'])->name('details');
+
+Route::middleware(['auth:sanctum','verified'])->group(function(){
+
+Route::get('/cart',[FrontendController::class,'cart'])->name('cart');
+Route::post('/cart/{id}',[FrontendController::class,'cartAdd'])->name('cart-add');
+Route::delete('/cart/{id}',[FrontendController::class,'cartDelete'])->name('cart-delete');
+Route::post('/checkout',[FrontendController::class,'checkout'])->name('checkout');
+Route::get('/checkout/success',[FrontendController::class,'success'])->name('checkout-success');
+
+
+
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+Route::middleware(['auth:sanctum','verified'])->name('dashboard.')->prefix('dashboard')->group(function(){
+    Route::get('/',[DashboardController::class,'index'])->name('index');
+    //route untuk transaction user
+    Route::resource('my-transaction',MyTransactionController::class)->only([
+    'index','show',]);
+
+    Route::middleware(['admin'])->group(function(){
+        //route product
+        Route::resource('product',ProductController::class);
+        //route product gallery tapi hanya bagian index,create,store dan destroy saja
+        Route::resource('product.gallery',ProductGalleryController::class)->shallow()->only([
+            'index','create','store','destroy'
+        ]);
+        //route untuk transaction
+        Route::resource('transaction',TransactionController::class)->only([
+            'index','show','update','edit'
+        ]);
+        //route user
+        Route::resource('user',UserController::class)->only([
+            'index','update','edit','destroy'
+        ]);
+    });
 });

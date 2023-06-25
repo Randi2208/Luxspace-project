@@ -5,17 +5,39 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('dashboard.index') }}">
                         <x-application-mark class="block h-9 w-auto" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+                    <x-nav-link href="{{ route('dashboard.index') }}" :active="request()->routeIs('dashboard.index')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                <x-nav-link href="{{ route('index') }}" :active="request()->routeIs('index')">
+                    {{ __('Home') }}
+                </x-nav-link>
+                
+                    @if (Auth::user()->roles== 'ADMIN')
+                    <x-nav-link href="{{ route('dashboard.product.index') }}" :active="request()->routeIs('dashboard.product.index')">
+                        {{ __('Product') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('dashboard.transaction.index') }}" :active="request()->routeIs('dashboard.transaction.index')">
+                        {{ __('Transaction') }}
+                    </x-nav-link>
+                    <x-nav-link href="{{ route('dashboard.user.index') }}" :active="request()->routeIs('dashboard.user.index')">
+                        {{ __('User') }}
+                    </x-nav-link>
+                    @endif
+
+                    <x-nav-link href="{{ route('dashboard.my-transaction.index') }}" :active="request()->routeIs('dashboard.my-transaction.inde')">
+                        {{ __('My Transaction') }}
+                    </x-nav-link>
+
                 </div>
+
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -139,8 +161,29 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
+            <x-responsive-nav-link href="{{ route('dashboard.index') }}" :active="request()->routeIs('dashboard.index')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+
+            {{--mengembalikan ke tampilan awal--}}
+            <x-responsive-nav-link href="{{ route('index') }}" :active="request()->routeIs('index')">
+                {{ __('Home') }}
+            </x-responsive-nav-link>
+            
+            @if (Auth::user()->roles== 'ADMIN')
+                <x-responsive-nav-link href="{{ route('dashboard.product.index') }}" :active="request()->routeIs('dashboard.product.index')">
+                    {{ __('Product') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="{{ route('dashboard.transaction.index') }}" :active="request()->routeIs('dashboard.transaction.index')">
+                    {{ __('Transaction') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link href="{{ route('dashboard.user.index') }}" :active="request()->routeIs('dashboard.user.index')">
+                    {{ __('User') }}
+                </x-responsive-nav-link>
+            @endif
+
+            <x-responsive-nav-link href="{{ route('dashboard.my-transaction.index') }}" :active="request()->routeIs('dashboard.my-transaction.index')">
+                {{ __('My Transaction') }}
             </x-responsive-nav-link>
         </div>
 
